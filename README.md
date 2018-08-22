@@ -7,7 +7,7 @@
 
 # Installation
 
-1. Clone the repository: git clone git@github.com:scotch-io/node-todo
+1. Clone the repository: git clone git@github.com:lapidoty/BuildForms
 
 2. Install the application: npm install
 
