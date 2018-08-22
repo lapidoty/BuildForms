@@ -15,4 +15,4 @@
 
 4. Start the server: node server.js
 
-5. View in browser at http://localhost:8080
+5. View in browser at http://localhost:3000
