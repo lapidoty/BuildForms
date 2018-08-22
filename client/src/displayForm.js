@@ -1,148 +1,159 @@
-
 import React, { Component } from 'react';
 import gql from "graphql-tag";
-import {graphql, compose} from "react-apollo";
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import { graphql, compose } from "react-apollo";
 import Button from '@material-ui/core/Button';
-import { BrowserRouter as Router , Link} from 'react-router-dom';
-import Route from 'react-router-dom/Route';
 import TextField from '@material-ui/core/TextField';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
 import { browserHistory } from 'react-router';
-
+import Paper from '@material-ui/core/Paper';
 
 const retrive = gql`
 {
-    forms{
-    name
-    formId
+    forms {
+      id
+      formId
+      name
       fields{
         label
         kind
-        data
       }
     }
+      fullfiledForms{
+      formId
+      }
   }`;
 
-  const addNewFullFiledForm = gql`
-mutation($formId: Int! , $fields: [inputField]!){
+
+const addNewFullFiledForm = gql`
+mutation($formId: String! , $fields: [inputField]!){
     createfullfiledForm(formId: $formId , fields: $fields ) 
 }`;
 
-class displayForm extends Component {
-    createfullFiledFormDB = async (form , formId) => {
-        console.log(Array.from(form.Form.values()))
-        await this.props.createfullFiledFormDB({
-          variables:{
-            formId: formId,
-            fields: Array.from(form.Form.values())
-          }
-        })
-        browserHistory.goBack()
-      };
-    
-	constructor(props){
+class DisplayForm extends Component {
+
+        // Constructor
+    constructor(props) {
         super(props);
         var myMap = new Map();
-		this.state = {
+        this.state = {
             Form: myMap
-		};
-	}
- 
-    defaultTypes = (kind , label) => {
-        switch(kind){
-        case "email": 
-            return "Enter a Email";
-            break;
-        case "color":
-        this.state.Form.set( label , 
-            {label: label,
-             kind: '',
-             Input_Name: '',
-             data: "#000000"} );
-            return "#000000";
-            break;
-        case "tel": 
-            return "Enter a Phone";
-            break;
-        case "text": 
-            return "text";
-            break;
-        case "number": 
-            return "number";
-            break;
+        };
     }
-    }
-	handleChange = (event) => {
-		event.preventDefault();
-    this.state.Form.set( event.target.name , 
-        {label: event.target.name,
-         kind: '',
-         Input_Name: '',
-         data: event.target.value} );
-         console.log(event.target.value)
-	};
 
-	render() {
+    // Function to be called when submit the Form
+    createfullFiledFormDB = async (form, formId) => {
+        console.log(Array.from(form.Form.values()))
+
+        // Send the query to update the data base
+        await this.props.createfullFiledFormDB({
+            variables: {
+                formId: formId,
+                fields: Array.from(form.Form.values())
+            }
+        })
+
+        // Return to Home Page
+        browserHistory.goBack() 
+
+        // Update the cache
+        this.props.updateMethod(); 
+
+    };
+
+    defaultTypes = (kind, label) => {
+        switch (kind) {
+            case "email":
+                return "Enter a Email";
+            case "color":
+                this.state.Form.set(label,
+                    {
+                        label: label,
+                        kind: '',
+                        Input_Name: '',
+                        data: "#000000"
+                    });
+                return "#000000";
+            case "tel":
+                return "Enter a Phone";
+            case "number":
+                return "number";
+            default:
+                return "text";
+        }
+    }
+
+    handleChange = (event) => {
+        event.preventDefault();
+        this.state.Form.set(event.target.name,
+            {
+                label: event.target.name,
+                kind: '',
+                Input_Name: '',
+                data: event.target.value
+            });
+    };
+
+    render() {
+
+        // Init local vars
+        const parts = window.location.href.split('/');
+        const lastSegment = parts.pop() || parts.pop();
         const forms = this.props.retriveDB.forms;
-        if(this.props.retriveDB.loading){
-            return null;
-          }
-        const filterForm = forms.filter(form => form.formId == this.props.match.params.formId)
-	    return (
-        
-                <center>
-                    <h1>{filterForm[0].name} Form</h1>
-                  <div>
-                  
-              {filterForm[0].fields.map((row , index) => {
-            return (
-                
-                <div>
-                   
-                <TextField
-                id={row.label}
-               label={row.label}
-                 name={row.label}
-                 margin="normal"
-                 multiLine={true}
-                 defaultValue={this.defaultTypes(row.kind , row.label)}
-                 type={row.kind}
-                 InputLabelProps={{
-                    shrink: true,
-                  }}
-					//value={this.state.Form}
-					onChange={this.handleChange}
-                 />
-                 </div>
-            );
-          })}
+        const isLoading = this.props.retriveDB.loading
 
-          <Button 	label="Submit" variant="contained" color="default"
-					primary={true}
-					onClick={() => this.createfullFiledFormDB(this.state , filterForm[0].formId)}
-				>
-        Submit
-        </Button>
-        <Button 
-					label="Cancel" variant="contained" color="default"
-					onClick={browserHistory.goBack}
-          style={{marginLeft: 10}}>
-          Go Back
-          </Button>
-                  </div>
-                  </center>
-              
-	 	);
-	}
+        if (isLoading) {
+            return null;
+        }
+
+        const filterForm = forms.filter(form => form.formId === lastSegment)
+        const currentForm = filterForm[0];
+        const formName = currentForm.name;
+
+        // To render
+        return (
+            <center>
+                <div style = {{ margin: "auto" , width: 300}}>
+                <Paper>
+                <h1>{formName} Form</h1>
+                    <div>
+                    {currentForm.fields.map((row, index) => {
+                        return (
+                            <div key={index}>
+                                <TextField
+                                    id={row.label}
+                                    label={row.label}
+                                    name={row.label}
+                                    margin="normal"
+                                    defaultValue={this.defaultTypes(row.kind, row.label)}
+                                    type={row.kind}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    onChange={this.handleChange}/>
+                            </div>
+                        );
+                    })}
+
+                    <br/>
+
+                    <Button label="Submit" variant="contained" color="default"
+                            onClick={() => this.createfullFiledFormDB(this.state, filterForm[0].formId)}>
+                            Submit
+                            </Button>
+
+                    <Button label="Cancel" variant="contained" color="default"
+                            onClick={browserHistory.goBack}>
+                            Go Back
+                            </Button>
+
+                    <br/><br/>  
+
+                </div>
+                </Paper>
+                </div>
+            </center>
+
+        );
+    }
 }
 
-export default compose(graphql(retrive , {name:"retriveDB"}) , graphql(addNewFullFiledForm , {name:"createfullFiledFormDB"}))(displayForm);
+export default compose(graphql(retrive, { name: "retriveDB" }), graphql(addNewFullFiledForm, { name: "createfullFiledFormDB" }))(DisplayForm);

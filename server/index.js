@@ -1,8 +1,8 @@
- const { GraphQLServer } = require('graphql-yoga')
+const { GraphQLServer } = require('graphql-yoga')
 
 // getting-started.js
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test3' , { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost/test4', { useNewUrlParser: true });
 
 const Field = {
   label: String,
@@ -11,13 +11,13 @@ const Field = {
 };
 
 const Form = mongoose.model('Form', {
-    formId: Number,
-    name: String,
-    fields: [Field],
+  formId: String,
+  name: String,
+  fields: [Field],
 });
 
 const FullFiledForms = mongoose.model('FullFiledForms', {
-  formId: Number,
+  formId: String,
   fields: [Field],
 });
 
@@ -43,25 +43,23 @@ const typeDefs = `
     kind: String!
     data: String!
     Input_Name: String!
-    
-    
   }
   
   type Form{
       id: ID!
-      formId: Int!
+      formId: String!
       name: String!
       fields: [Field]!
   }
 
   type FullFiledForms{
     id: ID!
-    formId: Int!
+    formId: String!
     fields: [Field]!
 }
   type Mutation{
-      createForm(formId: Int! , name: String! , fields: [inputField]! ): String
-      createfullfiledForm(formId: Int! , fields: [inputField]!): String
+      createForm(formId: String! , name: String! , fields: [inputField]! ): String
+      createfullfiledForm(formId: String! , fields: [inputField]!): String
   }
 `
 
@@ -73,24 +71,26 @@ const resolvers = {
     fullfiledForms: () => FullFiledForms.find()
   },
   Mutation: {
-      createForm: async (_ ,{formId,name,fields}) => {
-          const form = new Form({formId , name , fields});
-          await form.save();
-          return name;
-      },
-      createfullfiledForm: async (_ , {formId , fields}) => {
-        const form = new FullFiledForms({formId ,  fields});
-        await form.save();
-        return form;
+    createForm: async (_, { formId, name, fields }) => {
+      const form = new Form({ formId, name, fields });
+      await form.save();
+      return name;
+    },
+    createfullfiledForm: async (_, { formId, fields }) => {
+      const form = new FullFiledForms({ formId, fields });
+      await form.save();
+      return form;
     }
   }
 }
 
-const server = new GraphQLServer({ typeDefs, resolvers , resolverValidationOptions: {
-  requireResolversForResolveType: false
-}})
+const server = new GraphQLServer({
+  typeDefs, resolvers, resolverValidationOptions: {
+    requireResolversForResolveType: false
+  }
+})
 
-mongoose.connection.once('open', function() {
-    server.start(() => console.log('Server is running on localhost:4000'))
+mongoose.connection.once('open', function () {
+  server.start(() => console.log('Server is running on localhost:4000'))
 });
 

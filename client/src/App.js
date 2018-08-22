@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import gql from "graphql-tag";
-import {graphql, compose} from "react-apollo";
+import {graphql} from "react-apollo";
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -10,33 +10,11 @@ import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import { BrowserRouter as Router , Link} from 'react-router-dom';
 import Route from 'react-router-dom/Route';
-import TextField from '@material-ui/core/TextField';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
+
 import ExperimentForm from './ExperimentForm';
-import displayForm from './displayForm';
+import DisplayForm from './DisplayForm';
 import displaySubmits from './displaySubmits';
-import { browserHistory } from 'react-router';
 
-
-
-const styles = theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
-  },
-  table: {
-    minWidth: 700,
-  },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 200,
-  }
-});
 
 const rows = gql`
 {
@@ -60,12 +38,19 @@ const rows = gql`
 
 class App extends Component {
 
+  update = () => {
+    this.props.data.refetch();
+  }
   render() {
     const {data: {loading , forms , fullfiledForms}} = this.props;
-   console .log(this.props);
+
     if(loading){
       return null;
     }
+
+    //if(loading === false && typeof forms === "undefined"){
+      //document.location.reload(true);
+    //}
 
     return (
       <Router>
@@ -93,18 +78,18 @@ class App extends Component {
           </TableRow>
         </TableHead>
         <TableBody>
-          {forms.map(row => {
+          {forms.map((row , index) => {
             return (
               <TableRow key={row.id}>
-                <TableCell > {row.formId} </TableCell>
+                <TableCell > { index } </TableCell>
                 <TableCell > {row.name} </TableCell>
                 <TableCell>
-                   {fullfiledForms.filter(rowf => {return (rowf.formId == row.formId)}).length}
+                   {fullfiledForms.filter(rowf => {return (rowf.formId === row.formId)}).length}
                     </TableCell>
                     
                <TableCell > 
 
-                 <Button component={Link} to={"/displayForm/".concat(row.formId)}  color="default" >
+                 <Button component={Link} to={"/DisplayForm/".concat(row.formId)}  color="default" >
                  VIEW     
                 </Button> </TableCell>
 
@@ -142,11 +127,17 @@ class App extends Component {
          <Route path="/Builder" exact strict render={
                 ()=>{
                   return(
-                  <ExperimentForm />  
+                  <ExperimentForm updateMethod={this.update} />  
+                  )
+                }}/>
+                 <Route path="/DisplayForm/:formId" exact strict render={
+                ()=>{
+                  return(
+                  <DisplayForm updateMethod={this.update} />  
                   )
                 }}/>
 
-          <Route path="/displayForm/:formId" exact strict component={displayForm}/>
+          {/*<Route path="/DisplayForm/:formId" exact strict component={DisplayForm}/>*/}
           <Route path="/displaySubmits/:formId" exact strict component={displaySubmits}/>
 
    </div>       

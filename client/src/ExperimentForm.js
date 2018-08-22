@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import gql from "graphql-tag";
-import {graphql, compose} from "react-apollo";
+import {graphql} from "react-apollo";
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -9,18 +9,15 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
-import { BrowserRouter as Router , Link} from 'react-router-dom';
-import Route from 'react-router-dom/Route';
 import TextField from '@material-ui/core/TextField';
-import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import { browserHistory } from 'react-router';
-
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 
 const addNewForm = gql`
-mutation($formId: Int! , $name: String! , $fields: [inputField]!){
+mutation($formId: String! , $name: String! , $fields: [inputField]!){
   createForm(formId: $formId , name: $name , fields: $fields ) 
 }`;
 
@@ -29,11 +26,13 @@ class ExperimentForm extends Component {
     createForm = async form => {
         await this.props.createFormDB({
           variables:{
-            formId: Math.floor(Math.random() * (100 - 1)) + 1,
+            formId: '_' + Math.random().toString(36).substr(2, 9),
             name: form.Form_Name,
             fields: form.Form
           }
         })
+        this.props.updateMethod();
+        browserHistory.goBack()
       };
 
 	constructor(props){
@@ -71,14 +70,15 @@ class ExperimentForm extends Component {
       data: this.props.experiment ? this.props.experiment.data:'',
       Form : this.state.Form.push(field)
     };
-    
+    this.setState({label: '' , kind :'' , Input_Name :''})
     this.setState({ refresfData });
   };
 
-
+  
 	render() {
-    
 	    return (
+        <div style = {{ margin: "auto" , width: 400}}>
+      <Paper>
         <div>
           <center>
           <div>
@@ -91,28 +91,42 @@ class ExperimentForm extends Component {
 					value={this.state.label}
           onChange={this.handleChange}
           margin="normal"
-					
+					InputLabelProps={{
+            shrink: true,
+        }}
 			    /><br />
 				<TextField
         id="Input Name"
         label="Enter Input Name"
 					name="Input_Name"
-					multiLine={true}
 					value={this.state.Input_Name}
 					onChange={this.handleChange}
-					
+					InputLabelProps={{
+            shrink: true,
+        }}
 			    /><br/>
-          <TextField
-        id="Input type"
-        label="Enter Input type"
-					name="kind"
-					multiLine={true}
-					value={this.state.kind}
-					onChange={this.handleChange}
-					
-			    /><br/><br/>
+          <div style = {{ margin: "auto" , width: 180}}>
+          <FormControl fullWidth={true}>
+          <InputLabel shrink={true} >Type</InputLabel>
+          <Select 
+          
+            value={this.state.kind}
+            onChange={this.handleChange}
+            inputProps={{
+              name: 'kind',
+              id: 'Input type',
+            }}
+          >
+            <MenuItem value={"text"}>text</MenuItem>
+            <MenuItem value={"tel"}>tel</MenuItem>
+            <MenuItem value={"number"}>number</MenuItem>
+            <MenuItem value={"email"}>email</MenuItem>
+            <MenuItem value={"date"}>date</MenuItem>
+          </Select>
+        </FormControl>
+        </div>
+        <br/><br/>
 				<Button 	label="Add Field" variant="contained" color="default"
-					primary={true}
 					onClick={this.submit}
 				>
         Add Field
@@ -127,8 +141,7 @@ class ExperimentForm extends Component {
 			</form>
       </div>
       <br/>
-      <div style = {{ margin: "auto" , width: 400}}>
-      <Paper>
+      
       <Table>
         <TableHead>
           <TableRow>
@@ -138,9 +151,9 @@ class ExperimentForm extends Component {
           </TableRow>
         </TableHead>
         <TableBody>
-          {this.state.Form.map(row => {
+          {this.state.Form.map((row , index) => {
             return (
-              <TableRow key={row.id}>
+              <TableRow key={index}>
                 <TableCell >{row.label}</TableCell>
                 <TableCell > {row.Input_Name}</TableCell>
                 <TableCell > {row.kind}</TableCell>
@@ -149,27 +162,30 @@ class ExperimentForm extends Component {
           })}
         </TableBody>
       </Table>
-    </Paper>
-    </div>
+    
+   
     <div>
     <br/>
           <TextField
         id="Form Name"
         label="Enter Form Name"
 					name="Form_Name"
-					multiLine={true}
 					value={this.state.Form_Name}
 					onChange={this.handleChange}
-					
+					InputLabelProps={{
+            shrink: true,
+        }}
 			    /><br/><br/>
 				<Button 	label="Done" variant="contained" color="default"
-					primary={true}
 					onClick={() => this.createForm(this.state)}
 				>
         Done
-        </Button>
+        </Button><br/><br/>
+        </div>
+        </center>
       </div>
-      </center>
+      
+      </Paper>
     </div>
 	 	);
 	}
