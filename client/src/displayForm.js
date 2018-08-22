@@ -57,6 +57,30 @@ class displayForm extends Component {
 		};
 	}
  
+    defaultTypes = (kind , label) => {
+        switch(kind){
+        case "email": 
+            return "Enter a Email";
+            break;
+        case "color":
+        this.state.Form.set( label , 
+            {label: label,
+             kind: '',
+             Input_Name: '',
+             data: "#000000"} );
+            return "#000000";
+            break;
+        case "tel": 
+            return "Enter a Phone";
+            break;
+        case "text": 
+            return "text";
+            break;
+        case "number": 
+            return "number";
+            break;
+    }
+    }
 	handleChange = (event) => {
 		event.preventDefault();
     this.state.Form.set( event.target.name , 
@@ -64,7 +88,7 @@ class displayForm extends Component {
          kind: '',
          Input_Name: '',
          data: event.target.value} );
-        // console.log(this.state.Form.get(event.target.name))
+         console.log(event.target.value)
 	};
 
 	render() {
@@ -90,6 +114,11 @@ class displayForm extends Component {
                  name={row.label}
                  margin="normal"
                  multiLine={true}
+                 defaultValue={this.defaultTypes(row.kind , row.label)}
+                 type={row.kind}
+                 InputLabelProps={{
+                    shrink: true,
+                  }}
 					//value={this.state.Form}
 					onChange={this.handleChange}
                  />
