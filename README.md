@@ -33,6 +33,6 @@ A Build Form Web-App which using:
 ### Dependencies
     -graphql
     -mongoose
-    -material-ui/core
+    -material-ui
     -react-apollo
     -react-router
