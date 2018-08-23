@@ -20,7 +20,7 @@ A Build Form Web-App which using:
 
     - For Windows [https://www.mongodb.com/download-center#community] 
     - For Linux [https://docs.mongodb.com/manual/administration/install-on-linux/] OR Fast installation:
-        - Ubuntu: ```sudo apt-get install mongodb```
+        - Ubuntu: ```sudo apt-get install mongodb``` then
                     ```sudo apt-get update```
 
 
