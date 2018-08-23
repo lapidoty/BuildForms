@@ -16,7 +16,7 @@ A Build Form Web-App which using:
 
 - ```Node```(Make sure its the latest version) and ```npm```
 
-- ```MongoDB```: Make sure you have your own local MongoDB database , installation link: ```https://docs.mongodb.com/manual/installation/```
+- ```MongoDB```: Make sure you have your own local MongoDB database(just require installation): ```https://docs.mongodb.com/manual/installation/```
 
 ### Installation
 
