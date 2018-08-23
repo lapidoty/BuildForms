@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import { browserHistory } from 'react-router';
 import Paper from '@material-ui/core/Paper';
 
+/* Queries: */
 const retrive = gql`
 {
     forms {
@@ -30,7 +31,6 @@ mutation($formId: String! , $fields: [inputField]!){
 
 class DisplayForm extends Component {
 
-        // Constructor
     constructor(props) {
         super(props);
         var myMap = new Map();
@@ -108,13 +108,13 @@ class DisplayForm extends Component {
         const currentForm = filterForm[0];
         const formName = currentForm.name;
 
-        // To render
         return (
             <center>
                 <div style = {{ margin: "auto" , width: 300}}>
                 <Paper>
                 <h1>{formName} Form</h1>
                     <div>
+                        {/* Display the form fields*/}
                     {currentForm.fields.map((row, index) => {
                         return (
                             <div key={index}>
@@ -132,21 +132,19 @@ class DisplayForm extends Component {
                             </div>
                         );
                     })}
-
                     <br/>
 
-                    <Button label="Submit" variant="contained" color="default"
+                            <Button label="Submit" variant="contained" color="default"
                             onClick={() => this.createfullFiledFormDB(this.state, filterForm[0].formId)}>
                             Submit
                             </Button>
 
-                    <Button label="Cancel" variant="contained" color="default"
+                            <Button label="Cancel" variant="contained" color="default"
                             onClick={browserHistory.goBack}>
                             Go Back
                             </Button>
 
                     <br/><br/>  
-
                 </div>
                 </Paper>
                 </div>

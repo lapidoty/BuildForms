@@ -2,7 +2,7 @@ const { GraphQLServer } = require('graphql-yoga')
 
 // getting-started.js
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test4', { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost/db', { useNewUrlParser: true });
 
 const Field = {
   label: String,

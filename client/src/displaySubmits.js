@@ -10,6 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import { browserHistory } from 'react-router';
 
+/* Queries: */
 const rows = gql`
 {
     fullfiledForms{
@@ -23,13 +24,16 @@ const rows = gql`
   }`;
 
 
-class displaySubmits extends Component {
+class DisplaySubmits extends Component {
   render() {
+     // Init local vars
     const { data: { loading, fullfiledForms } } = this.props;
     if (loading) {
       return null;
     }
     const filterForm = fullfiledForms.filter(form => form.formId === this.props.match.params.formId)
+
+    // Case of - no submmisions 
     if (filterForm.length === 0)
       return (
         <center>
@@ -42,14 +46,16 @@ class displaySubmits extends Component {
           </Button>
         </center>
       );
-    return (
 
+      // Case of - there are submmisions 
+    return (
       <center>
         <h1>Form Submissions</h1>
         <div>
-
           <div style={{ display: "flex" }}>
             <div style={{ margin: "auto" }}>
+
+            {/* Display the content of the submmisions in a table */}
               <Paper>
                 <Table>
                   <TableHead>
@@ -91,4 +97,4 @@ class displaySubmits extends Component {
   }
 }
 
-export default graphql(rows)(displaySubmits);
+export default graphql(rows)(DisplaySubmits);
