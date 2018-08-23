@@ -22,9 +22,9 @@ A Build Form Web-App which using:
 
 1. Clone the repository:  ```git clone https://github.com/lapidoty/BuildForms.git```
 
-2. Install the application: ```npm install```
+2. Start the server(from the server directory): ```node index.js```
 
-3. Start the server(from the server directory): ```node index.js```
+3. Install the application(from the client directory): ```npm install```
 
 4. Start the client(from the client directory): ```npm start``` (Opens the browser)
 
