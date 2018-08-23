@@ -1,18 +1,38 @@
 # BuildForms
-# Requirements
+A Build Form Web-App which using:
 
-- Node and npm
+1) ReactJS 
 
-- MongoDB: Make sure you have your own local or remote MongoDB database URI configured in config/database.js
+2) Node.js 
 
-# Installation
+3) Express
 
-1. Clone the repository: git clone git@github.com:lapidoty/BuildForms
+4) MongoDB
 
-2. Install the application: npm install
+5) GraphQL
 
-3. Place your own MongoDB URI in config/database.js
+## Getting started
+### Requirements
 
-4. Start the server: node server.js
+- ```Node``` and ```npm```
 
-5. View in browser at http://localhost:3000
+- ```MongoDB```: Make sure you have your own local MongoDB database
+
+### Installation
+
+1. Clone the repository:  ```git clone git@github.com:lapidoty/BuildForms```
+
+2. Install the application: ```npm install```
+
+3. Start the server(from the server directory): ```node index.js```
+
+4. Start the client(from the client directory): ```npm start```
+
+5. View in browser at ```http://localhost:3000```
+
+### Dependencies
+    -graphql
+    -mongoose
+    -material-ui/core
+    -react-apollo
+    -react-router
