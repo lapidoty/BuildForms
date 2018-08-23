@@ -26,9 +26,7 @@ A Build Form Web-App which using:
 
 3. Start the server(from the server directory): ```node index.js```
 
-4. Start the client(from the client directory): ```npm start```
-
-5. View in browser at ```http://localhost:3000```
+4. Start the client(from the client directory): ```npm start``` (Opens the browser)
 
 ### Dependencies
     -graphql
