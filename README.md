@@ -20,7 +20,7 @@ A Build Form Web-App which using:
 
 ### Installation
 
-1. Clone the repository:  ```git clone git@github.com:lapidoty/BuildForms```
+1. Clone the repository:  ```git clone https://github.com/lapidoty/BuildForms.git```
 
 2. Install the application: ```npm install```
 
