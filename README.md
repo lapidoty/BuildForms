@@ -40,5 +40,3 @@ A Build Form Web-App which using:
     -material-ui
     -react-apollo
     -react-router
-### To Do
-- Invalid input handle
