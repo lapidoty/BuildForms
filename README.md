@@ -18,9 +18,11 @@ A Build Form Web-App which using:
 
 - ```MongoDB```: Make sure you have your own local MongoDB database(just require installation):
 
-    - For Windows [https://www.mongodb.com/download-center#community]
-    - For Linux [https://docs.mongodb.com/manual/administration/install-on-linux/]
+    - For Windows [https://www.mongodb.com/download-center#community] 
+    - For Linux [https://docs.mongodb.com/manual/administration/install-on-linux/] OR Fast installation:
         - Ubuntu: ```sudo apt-get install mongodb```
+                    ```sudo apt-get update```
+
 
 ### Installation
 
