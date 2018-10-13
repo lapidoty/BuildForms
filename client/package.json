@@ -5,12 +5,20 @@
   "dependencies": {
     "@material-ui/core": "^1.5.1",
     "@material-ui/icons": "^2.0.3",
-    "apollo-boost": "^0.1.14",
+    "apollo-boost": "^0.1.15",
+    "cheerio": "^1.0.0-rc.2",
+    "del": "^3.0.0",
     "graphql": "^0.13.2",
+    "iconv-lite": "^0.4.24",
+    "pdf-parse": "^1.0.8",
+    "pdf-text-extract": "^1.5.0",
+    "pdf.js-extract": "0.0.9",
+    "pdf2json": "^1.1.7",
+    "pdfjs-dist": "^2.0.550",
+    "pdfreader": "^0.2.5",
     "react": "^16.4.2",
     "react-apollo": "^2.1.11",
     "react-dom": "^16.4.2",
-    "react-google-recaptcha": "^1.0.2",
     "react-material-ui-form-validator": "^2.0.1",
     "react-router": "^3.2.1",
     "react-router-dom": "^4.3.1",
@@ -22,5 +30,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-util": "^3.0.8",
+    "worker-loader": "^2.0.0"
   }
 }

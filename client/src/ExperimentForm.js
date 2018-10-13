@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import gql from "graphql-tag";
-import { graphql , compose} from "react-apollo";
+import { graphql } from "react-apollo";
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -15,7 +15,6 @@ import FormControl from '@material-ui/core/FormControl';
 import { browserHistory } from 'react-router';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import ReCAPTCHA from "react-google-recaptcha";
 
 /* Queries: */
 const addNewForm = gql`
@@ -23,18 +22,12 @@ mutation($formId: String! , $name: String! , $fields: [inputField]!){
   createForm(formId: $formId , name: $name , fields: $fields ) 
 }`;
 
-const req = gql`
-query hello($req: String!){
-    hello(req: $req)
-  }`;
-
 
 class ExperimentForm extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      ver: false,
       label: '',
       Input_Name: '',
       kind: '',
@@ -53,7 +46,6 @@ class ExperimentForm extends Component {
         fields: form.Form
       }
     })
-    
 
     // Update the cache
     this.props.updateMethod();
@@ -61,21 +53,6 @@ class ExperimentForm extends Component {
     // Return to Home Page
     browserHistory.goBack()
   };
-
-  verification = async req => {
-    console.log(req)
-    await this.props.hello({
-      variables: {
-        req: req
-      }
-    }).then(()=> console.log("sueccess"))
-    
-  };
-
-  onChange(value) {
-    //this.verification(value)
-
-  }
 
     // Update the contet of the new to come field
   handleChange = (event) => {
@@ -202,11 +179,6 @@ class ExperimentForm extends Component {
                     shrink: true,
                   }}
                 /><br /><br />
-                <ReCAPTCHA
-    sitekey="6LdpenAUAAAAAOVunp7WcVaD9VdFV-7i-kqhnrRi"
-    onChange={this.verification}
-  />
-   /><br /><br />
                 <Button label="Done" variant="contained" color="default" onClick={() => this.createForm(this.state)}>
                   Done
                 </Button>
@@ -220,4 +192,4 @@ class ExperimentForm extends Component {
   }
 }
 
-export default compose(graphql(addNewForm, { name: "createFormDB" }) , graphql(req, { name: "hello" }))(ExperimentForm);
+export default graphql(addNewForm, { name: "createFormDB" })(ExperimentForm);

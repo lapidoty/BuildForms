@@ -1,6 +1,6 @@
 const { GraphQLServer } = require('graphql-yoga')
-const{ request } = require('request');
-
+var fs = require('fs')
+var https = require("https")
 // getting-started.js
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/db', { useNewUrlParser: true });
@@ -22,15 +22,12 @@ const FullFiledForms = mongoose.model('FullFiledForms', {
   fields: [Field],
 });
 
-const RECAPTCHA_SECRET_KEY="6LdpenAUAAAAAK63IoBWQTUzOCJDo-CUh712o2b7" 
-
 const typeDefs = `
   type Query {
     hello(name: String): String!
     forms: [Form]
     formById(id: ID): [Form]
     fullfiledForms : [FullFiledForms]
-    verification(req: String): String!
   }
 
   input inputField{
@@ -65,55 +62,11 @@ const typeDefs = `
       createForm(formId: String! , name: String! , fields: [inputField]! ): String
       createfullfiledForm(formId: String! , fields: [inputField]!): String
   }
-
-  
 `
-
-const verifyHumanity = (req) => {
-  
-  const d = Q.defer();
-  const recaptchaResponse = req.body['g-recaptcha-response'];
- 
- request.post('https://www.google.com/recaptcha/api/siteverify', {
-    form: {
-      secret: RECAPTCHA_SECRET_KEY,
-      response: recaptchaResponse,
-      remoteip: req.connection.remoteAddress
-    }
-  }, (err, httpResponse, body)=>{
-    if(err) {
-      d.reject(new Error(err));
-    } else {
-      const r = JSON.parse(body);
-      if (r.success) {
-        d.resolve(r.success);
-      } else {
-         d.reject(new Error());
-     }
-    }
-  });
- 
-   return d.promise;
- }
 
 const resolvers = {
   Query: {
-    hello: (_, { req }) => { 
-      verifyHumanity(req)
-            .then(()=>{
-              return "Succsess";
-            })
-             .catch(()=>{
-               
-                 // failure
-                 res.status(400);
-                 res.send({
-                     error: 'Please verify that you\'re a human'
-                 });
-                 return "Failure";
-              });
-      
-  },
+    hello: (_, { name }) => `Hello ${name || 'World'}`,
     forms: () => Form.find(),
     formById: (id) => Form.findById(id),
     fullfiledForms: () => FullFiledForms.find()
@@ -132,12 +85,40 @@ const resolvers = {
   }
 }
 
-
 const server = new GraphQLServer({
   typeDefs, resolvers, resolverValidationOptions: {
     requireResolversForResolveType: false
   }
 })
+
+
+var options = {
+  host: "reports4u.bgu.ac.il",
+    path: "/reports/rwservlet?cmdkey=PROD&server=rep_aristo4stu4_FRHome1&report=acrr008w&desformat=pdf&DESTYPE=cache&P_YEAR=2019&P_SEMESTER=1&P_INSTITUTION=0&P_DEGREE_LEVEL=1&P_DEPARTMENT=373&P_GLOBAL_COURSES=2&P_PATH=&P_SPEC=&P_YEAR_DEGREE=&P_SORT=1&P_WEB=1&P_SPECIAL_PATH=0&P_KEY=",
+    method: "GET"
+};
+
+var req = https.request(options, function(res) {
+      var resBody="";
+      res.setEncoding("UTF-8")
+      res.once('data', function(chunk) {
+    });
+
+    res.on('data', function(chunk) {
+      resBody+=chunk
+    });
+
+    res.on("end" , function(){
+        fs.writeFile("ex.pdf" , resBody , function (err){
+            if(err){
+                throw err;
+            }
+            console.log("done")
+        });
+    } );
+  });
+
+  req.end()
 
 mongoose.connection.once('open', function () {
   server.start(() => console.log('Server is running on localhost:4000'))
